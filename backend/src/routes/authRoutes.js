@@ -86,6 +86,12 @@ router.get('/reset-password', (req, res) => {
             .tokens {
                 display: none;
             }
+            .qr-section {
+                margin-top: 30px;
+                padding: 20px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+            }
         </style>
     </head>
     <body>
@@ -94,8 +100,7 @@ router.get('/reset-password', (req, res) => {
             <h1>Busca Busca Imóveis</h1>
             <p>Clique no botão abaixo para abrir o app e redefinir sua senha:</p>
             
-            <a href="buscabusca://reset-password?access_token=${access_token || ''}&refresh_token=${refresh_token || ''}&type=${type || ''}" 
-               class="button">
+            <a href="#" id="openAppBtn" class="button">
                 🔓 Abrir App
             </a>
             
@@ -104,6 +109,13 @@ router.get('/reset-password', (req, res) => {
                class="button secondary">
                 📱 Baixar App
             </a>
+            
+            <div class="qr-section">
+                <p><strong>Para testar com Expo Go:</strong></p>
+                <p>1. Abra o Expo Go no seu celular</p>
+                <p>2. Escaneie o QR Code que aparece no terminal</p>
+                <p>3. Depois clique em "Abrir App" acima</p>
+            </div>
             
             <div class="tokens">
                 <p>Tokens recebidos:</p>
@@ -114,15 +126,40 @@ router.get('/reset-password', (req, res) => {
         </div>
         
         <script>
-            // Tentar abrir o app automaticamente após 2 segundos
-            setTimeout(() => {
-                window.location.href = 'buscabusca://reset-password?access_token=${access_token || ''}&refresh_token=${refresh_token || ''}&type=${type || ''}';
-            }, 2000);
+            // Tentar diferentes URLs do Expo Go
+            const expoUrls = [
+                'exp://192.168.1.10:8081/--/reset-password?access_token=${access_token || ''}&refresh_token=${refresh_token || ''}&type=${type || ''}',
+                'exp://192.168.24.1:8081/--/reset-password?access_token=${access_token || ''}&refresh_token=${refresh_token || ''}&type=${type || ''}',
+                'exp://localhost:8081/--/reset-password?access_token=${access_token || ''}&refresh_token=${refresh_token || ''}&type=${type || ''}',
+                'buscabusca://reset-password?access_token=${access_token || ''}&refresh_token=${refresh_token || ''}&type=${type || ''}'
+            ];
             
-            // Se não conseguir abrir o app, mostrar mensagem
+            let currentUrlIndex = 0;
+            
+            function tryOpenApp() {
+                if (currentUrlIndex < expoUrls.length) {
+                    window.location.href = expoUrls[currentUrlIndex];
+                    currentUrlIndex++;
+                    
+                    // Tentar próxima URL após 1 segundo
+                    setTimeout(tryOpenApp, 1000);
+                } else {
+                    // Se nenhuma URL funcionou, mostrar mensagem
+                    document.querySelector('.container').innerHTML += '<p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">Se o app não abriu automaticamente, certifique-se de que o Expo Go está aberto e tente novamente.</p>';
+                }
+            }
+            
+            // Configurar botão
+            document.getElementById('openAppBtn').onclick = function(e) {
+                e.preventDefault();
+                currentUrlIndex = 0;
+                tryOpenApp();
+            };
+            
+            // Tentar abrir automaticamente após 2 segundos
             setTimeout(() => {
-                document.querySelector('.container').innerHTML += '<p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">Se o app não abriu automaticamente, clique no botão "Abrir App" acima.</p>';
-            }, 3000);
+                tryOpenApp();
+            }, 2000);
         </script>
     </body>
     </html>
@@ -208,6 +245,12 @@ router.get('/confirm-email', (req, res) => {
                 border-radius: 10px;
                 margin-bottom: 30px;
             }
+            .qr-section {
+                margin-top: 30px;
+                padding: 20px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+            }
         </style>
     </head>
     <body>
@@ -222,8 +265,7 @@ router.get('/confirm-email', (req, res) => {
             
             <p>Clique no botão abaixo para abrir o app:</p>
             
-            <a href="buscabusca://login?email_confirmed=true" 
-               class="button">
+            <a href="#" id="openAppBtn" class="button">
                 🚀 Abrir App
             </a>
             
@@ -232,18 +274,50 @@ router.get('/confirm-email', (req, res) => {
                class="button secondary">
                 📱 Baixar App
             </a>
+            
+            <div class="qr-section">
+                <p><strong>Para testar com Expo Go:</strong></p>
+                <p>1. Abra o Expo Go no seu celular</p>
+                <p>2. Escaneie o QR Code que aparece no terminal</p>
+                <p>3. Depois clique em "Abrir App" acima</p>
+            </div>
         </div>
         
         <script>
-            // Tentar abrir o app automaticamente após 2 segundos
-            setTimeout(() => {
-                window.location.href = 'buscabusca://login?email_confirmed=true';
-            }, 2000);
+            // Tentar diferentes URLs do Expo Go
+            const expoUrls = [
+                'exp://192.168.1.10:8081/--/login?email_confirmed=true',
+                'exp://192.168.24.1:8081/--/login?email_confirmed=true',
+                'exp://localhost:8081/--/login?email_confirmed=true',
+                'buscabusca://login?email_confirmed=true'
+            ];
             
-            // Se não conseguir abrir o app, mostrar mensagem
+            let currentUrlIndex = 0;
+            
+            function tryOpenApp() {
+                if (currentUrlIndex < expoUrls.length) {
+                    window.location.href = expoUrls[currentUrlIndex];
+                    currentUrlIndex++;
+                    
+                    // Tentar próxima URL após 1 segundo
+                    setTimeout(tryOpenApp, 1000);
+                } else {
+                    // Se nenhuma URL funcionou, mostrar mensagem
+                    document.querySelector('.container').innerHTML += '<p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">Se o app não abriu automaticamente, certifique-se de que o Expo Go está aberto e tente novamente.</p>';
+                }
+            }
+            
+            // Configurar botão
+            document.getElementById('openAppBtn').onclick = function(e) {
+                e.preventDefault();
+                currentUrlIndex = 0;
+                tryOpenApp();
+            };
+            
+            // Tentar abrir automaticamente após 2 segundos
             setTimeout(() => {
-                document.querySelector('.container').innerHTML += '<p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">Se o app não abriu automaticamente, clique no botão "Abrir App" acima.</p>';
-            }, 3000);
+                tryOpenApp();
+            }, 2000);
         </script>
     </body>
     </html>
