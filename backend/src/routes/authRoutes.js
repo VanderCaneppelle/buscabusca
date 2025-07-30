@@ -168,7 +168,7 @@ router.get('/reset-password', (req, res) => {
     res.send(html);
 });
 
-// Rota para confirmação de email (GET)
+// Rota para confirmação de email
 router.get('/confirm-email', (req, res) => {
     const { access_token, refresh_token, type } = req.query;
 

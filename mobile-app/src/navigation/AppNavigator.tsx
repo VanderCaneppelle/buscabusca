@@ -1,8 +1,10 @@
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
+import { Linking } from 'react-native';
 
 // Telas de autenticação
 import Login from '../screens/Login';
@@ -173,13 +175,67 @@ const MainStack = () => (
 const AppNavigator = () => {
     const { user, loading } = useAuth();
 
+    useEffect(() => {
+        const handleDeepLink = async () => {
+            const url = await Linking.getInitialURL();
+            if (url) {
+                console.log('Deep link inicial:', url);
+            }
+        };
+
+        handleDeepLink();
+
+        const listener = Linking.addEventListener('url', (event) => {
+            console.log('Deep link recebido:', event.url);
+        });
+
+        return () => {
+            listener.remove();
+        };
+    }, []);
+
     if (loading) {
         return <LoadingScreen />;
     }
 
+    // Configuração de deep linking
+    const linking = {
+        prefixes: ['exp://', 'buscabusca://'],
+        config: {
+            screens: {
+                Login: 'login',
+                Cadastro: 'cadastro',
+                RecuperarSenha: 'recuperar-senha',
+                ResetarSenha: 'reset-password',
+                Main: 'main',
+                AnuncioDetalhes: 'anuncio/:id',
+                Planos: 'planos',
+                Admin: 'admin',
+            },
+        },
+    };
+
     return (
-        <NavigationContainer>
-            {user ? <MainStack /> : <AuthStack />}
+        <NavigationContainer linking={linking}>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+                {user ? (
+                    // Usuário logado - mostra o app principal
+                    <>
+                        <Stack.Screen name="Main" component={MainStack} />
+                        <Stack.Screen name="AnuncioDetalhes" component={AnuncioDetalhes} />
+                        <Stack.Screen name="Planos" component={Planos} />
+                        <Stack.Screen name="Admin" component={Admin} />
+                    </>
+                ) : (
+                    // Usuário não logado - mostra telas de auth
+                    <>
+                        <Stack.Screen name="Login" component={Login} />
+                        <Stack.Screen name="Cadastro" component={Cadastro} />
+                        <Stack.Screen name="RecuperarSenha" component={RecuperarSenha} />
+                        <Stack.Screen name="ResetarSenha" component={ResetarSenha} />
+                    </>
+                )}
+            </Stack.Navigator>
         </NavigationContainer>
     );
 };
