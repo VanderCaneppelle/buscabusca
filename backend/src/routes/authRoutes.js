@@ -1,5 +1,6 @@
 import express from 'express';
 import { recuperarSenha, resetarSenha, verificarToken } from '../controllers/authController.js';
+import supabase from '../supabase/supabaseClient.js';
 
 const router = express.Router();
 
@@ -13,8 +14,73 @@ router.post('/reset-password', resetarSenha);
 router.post('/verificar-token', verificarToken);
 
 // Rota para redirecionamento do email (GET)
-router.get('/reset-password', (req, res) => {
-    const { access_token, refresh_token, type } = req.query;
+router.get('/reset-password', async (req, res) => {
+    const { access_token, refresh_token, type, error, error_description } = req.query;
+
+    // Se há erro, mostrar mensagem
+    if (error) {
+        return res.status(400).send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Erro - Busca Busca Imóveis</title>
+            <style>
+                body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f44336; color: white; }
+                .container { background: rgba(255,255,255,0.1); padding: 40px; border-radius: 20px; max-width: 400px; margin: 0 auto; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>❌ Erro</h1>
+                <p>${error_description || 'Ocorreu um erro ao processar sua solicitação.'}</p>
+                <p><a href="https://play.google.com/store/apps/details?id=com.buscabusca.app" style="color: white;">📱 Abrir App</a></p>
+            </div>
+        </body>
+        </html>
+        `);
+    }
+
+    // Se não há tokens, tentar extrair do hash do Supabase
+    let finalAccessToken = access_token;
+    let finalRefreshToken = refresh_token;
+    let finalType = type;
+
+    // Se não temos tokens mas temos um hash do Supabase, tentar extrair
+    if (!finalAccessToken && req.url.includes('#')) {
+        try {
+            // O Supabase pode enviar os tokens no fragment da URL
+            const hash = req.url.split('#')[1];
+            const params = new URLSearchParams(hash);
+            finalAccessToken = params.get('access_token');
+            finalRefreshToken = params.get('refresh_token');
+            finalType = params.get('type') || 'recovery';
+        } catch (e) {
+            console.error('Erro ao extrair tokens do hash:', e);
+        }
+    }
+
+    // Se ainda não temos tokens, tentar usar o session do Supabase
+    if (!finalAccessToken) {
+        try {
+            // Tentar obter a sessão atual do Supabase
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (session && !error) {
+                finalAccessToken = session.access_token;
+                finalRefreshToken = session.refresh_token;
+                finalType = 'recovery';
+            }
+        } catch (e) {
+            console.error('Erro ao obter sessão:', e);
+        }
+    }
+
+    console.log('Tokens finais:', {
+        access_token: finalAccessToken ? 'presente' : 'ausente',
+        refresh_token: finalRefreshToken ? 'presente' : 'ausente',
+        type: finalType
+    });
 
     // Criar uma página HTML que redireciona para o app
     const html = `
@@ -119,19 +185,19 @@ router.get('/reset-password', (req, res) => {
             
             <div class="tokens">
                 <p>Tokens recebidos:</p>
-                <p>Access Token: ${access_token || 'N/A'}</p>
-                <p>Refresh Token: ${refresh_token || 'N/A'}</p>
-                <p>Type: ${type || 'N/A'}</p>
+                <p>Access Token: ${finalAccessToken || 'N/A'}</p>
+                <p>Refresh Token: ${finalRefreshToken || 'N/A'}</p>
+                <p>Type: ${finalType || 'N/A'}</p>
             </div>
         </div>
         
         <script>
             // Tentar diferente URLs do Expo Go
             const expoUrls = [
-                'exp://192.168.1.10:8081/--/reset-password?access_token=${access_token || ''}&refresh_token=${refresh_token || ''}&type=${type || ''}',
-                'exp://192.168.24.1:8081/--/reset-password?access_token=${access_token || ''}&refresh_token=${refresh_token || ''}&type=${type || ''}',
-                'exp://localhost:8081/--/reset-password?access_token=${access_token || ''}&refresh_token=${refresh_token || ''}&type=${type || ''}',
-                'buscabusca://reset-password?access_token=${access_token || ''}&refresh_token=${refresh_token || ''}&type=${type || ''}'
+                'exp://192.168.1.10:8081/--/reset-password?access_token=${finalAccessToken || ''}&refresh_token=${finalRefreshToken || ''}&type=${finalType || ''}',
+                'exp://192.168.24.1:8081/--/reset-password?access_token=${finalAccessToken || ''}&refresh_token=${finalRefreshToken || ''}&type=${finalType || ''}',
+                'exp://localhost:8081/--/reset-password?access_token=${finalAccessToken || ''}&refresh_token=${finalRefreshToken || ''}&type=${finalType || ''}',
+                'buscabusca://reset-password?access_token=${finalAccessToken || ''}&refresh_token=${finalRefreshToken || ''}&type=${finalType || ''}'
             ];
             
             let currentUrlIndex = 0;
