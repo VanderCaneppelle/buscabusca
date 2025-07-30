@@ -126,7 +126,7 @@ router.get('/reset-password', (req, res) => {
         </div>
         
         <script>
-            // Tentar diferentes URLs do Expo Go
+            // Tentar diferente URLs do Expo Go
             const expoUrls = [
                 'exp://192.168.1.10:8081/--/reset-password?access_token=${access_token || ''}&refresh_token=${refresh_token || ''}&type=${type || ''}',
                 'exp://192.168.24.1:8081/--/reset-password?access_token=${access_token || ''}&refresh_token=${refresh_token || ''}&type=${type || ''}',
