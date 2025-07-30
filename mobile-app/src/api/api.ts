@@ -63,7 +63,7 @@ export const apiService = {
 
     // Autenticação
     recuperarSenha: (data: { email: string }) => api.post('/auth/recuperar-senha', data),
-    resetarSenha: (data: { token: string; nova_senha: string }) => api.post('/auth/resetar-senha', data),
+    resetarSenha: (data: { token: string; nova_senha: string }) => api.post('/auth/reset-password', data),
     verificarToken: (data: { token: string }) => api.post('/auth/verificar-token', data),
 
     // Favoritos

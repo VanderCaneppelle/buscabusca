@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/recuperar-senha', recuperarSenha);
 
 // Rota para resetar senha
-router.post('/resetar-senha', resetarSenha);
+router.post('/reset-password', resetarSenha);
 
 // Rota para verificar token
 router.post('/verificar-token', verificarToken);
