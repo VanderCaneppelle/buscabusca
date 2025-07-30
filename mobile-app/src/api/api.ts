@@ -61,6 +61,11 @@ export const apiService = {
     controlarSessao: (userId: string, sessionToken: string) =>
         api.post('/usuarios/controlar-sessao', { user_id: userId, session_token: sessionToken }),
 
+    // Autenticação
+    recuperarSenha: (data: { email: string }) => api.post('/auth/recuperar-senha', data),
+    resetarSenha: (data: { token: string; nova_senha: string }) => api.post('/auth/resetar-senha', data),
+    verificarToken: (data: { token: string }) => api.post('/auth/verificar-token', data),
+
     // Favoritos
     getFavoritos: () => api.get('/favoritos'),
     adicionarFavorito: (anuncioId: number) => api.post('/favoritos', { anuncio_id: anuncioId }),

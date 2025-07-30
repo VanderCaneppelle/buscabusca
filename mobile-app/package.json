@@ -6,7 +6,11 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "env:local": "node switch-env.js local && expo start --clear",
+    "env:railway": "node switch-env.js railway && expo start --clear",
+    "switch:local": "node switch-env.js local",
+    "switch:railway": "node switch-env.js railway"
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",

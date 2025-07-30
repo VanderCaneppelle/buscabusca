@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import anuncioRoutes from './routes/anuncioRoutes.js';
 import usuarioRoutes from './routes/usuarioRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -42,6 +43,7 @@ app.get('/', (req, res) => {
 // Rotas da API
 app.use('/anuncios', anuncioRoutes);
 app.use('/usuarios', usuarioRoutes);
+app.use('/auth', authRoutes);
 
 // Middleware de tratamento de erros
 app.use((err, req, res, next) => {
