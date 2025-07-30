@@ -108,6 +108,7 @@ export type RootStackParamList = {
     Login: undefined;
     Cadastro: undefined;
     RecuperarSenha: undefined;
+    ResetarSenha: undefined;
     Home: undefined;
     AnuncioDetalhes: { id: number };
     CriarAnuncio: undefined;

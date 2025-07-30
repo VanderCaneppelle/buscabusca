@@ -15,7 +15,7 @@ router.post('/verificar-token', verificarToken);
 // Rota para redirecionamento do email (GET)
 router.get('/reset-password', (req, res) => {
     const { access_token, refresh_token, type } = req.query;
-    
+
     // Criar uma página HTML que redireciona para o app
     const html = `
     <!DOCTYPE html>
@@ -127,7 +127,7 @@ router.get('/reset-password', (req, res) => {
     </body>
     </html>
     `;
-    
+
     res.send(html);
 });
 

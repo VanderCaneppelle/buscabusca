@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import Login from '../screens/Login';
 import Cadastro from '../screens/Cadastro';
 import RecuperarSenha from '../screens/RecuperarSenha';
+import ResetarSenha from '../screens/ResetarSenha';
 
 // Telas principais
 import Home from '../screens/Home';
@@ -37,6 +38,7 @@ const AuthStack = () => (
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Cadastro" component={Cadastro} />
         <Stack.Screen name="RecuperarSenha" component={RecuperarSenha} />
+        <Stack.Screen name="ResetarSenha" component={ResetarSenha} />
     </Stack.Navigator>
 );
 
