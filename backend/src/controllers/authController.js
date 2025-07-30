@@ -32,7 +32,7 @@ export async function recuperarSenha(req, res) {
 
         // Enviar email de recuperação via Supabase
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/reset-password`
+            redirectTo: `${process.env.BACKEND_URL || 'https://buscabusca-production.up.railway.app'}/auth/reset-password`
         });
 
         if (error) {
