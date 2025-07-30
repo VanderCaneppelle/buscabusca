@@ -27,7 +27,7 @@ export async function criarAnuncio(req, res) {
             banheiros: banheiros ? parseInt(banheiros) : null,
             area: area ? parseFloat(area) : null,
             user_id: userId,
-            aprovado: false,
+            status: 'pendente',
             created_at: new Date().toISOString()
         };
 
@@ -72,7 +72,7 @@ export async function listarAnuncios(req, res) {
         let query = supabase
             .from('anuncios')
             .select('*')
-            .eq('aprovado', true)
+            .eq('status', 'aprovado')
             .order('created_at', { ascending: false });
 
         // Filtros opcionais
@@ -140,7 +140,7 @@ export async function aprovarAnuncio(req, res) {
         const { data, error } = await supabase
             .from('anuncios')
             .update({
-                aprovado: true,
+                status: 'aprovado',
                 aprovado_em: new Date().toISOString(),
                 aprovado_por: userId
             })
@@ -190,7 +190,7 @@ export async function buscarAnuncioPorId(req, res) {
             .from('anuncios')
             .select('*')
             .eq('id', id)
-            .eq('aprovado', true)
+            .eq('status', 'aprovado')
             .single();
 
         if (error) {
