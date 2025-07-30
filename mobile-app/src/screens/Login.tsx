@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -22,6 +22,21 @@ const Login: React.FC = () => {
 
     const { signIn } = useAuth();
     const navigation = useNavigation();
+    const route = useRoute();
+
+    useEffect(() => {
+        // Verificar se veio de confirmação de email
+        if (route.params) {
+            const { email_confirmed } = route.params as any;
+            if (email_confirmed) {
+                Alert.alert(
+                    'Email Confirmado!',
+                    'Seu email foi confirmado com sucesso! Agora você pode fazer login.',
+                    [{ text: 'OK' }]
+                );
+            }
+        }
+    }, [route.params]);
 
     const handleLogin = async () => {
         if (!email || !senha) {

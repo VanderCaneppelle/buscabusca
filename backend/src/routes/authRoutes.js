@@ -131,4 +131,125 @@ router.get('/reset-password', (req, res) => {
     res.send(html);
 });
 
+// Rota para confirmação de email (GET)
+router.get('/confirm-email', (req, res) => {
+    const { access_token, refresh_token, type } = req.query;
+
+    // Criar uma página HTML que redireciona para o app
+    const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Confirmação de Email - Busca Busca Imóveis</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                padding: 50px 20px;
+                background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+                color: white;
+                min-height: 100vh;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            .container {
+                background: rgba(255, 255, 255, 0.1);
+                padding: 40px;
+                border-radius: 20px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                max-width: 400px;
+                width: 100%;
+            }
+            .icon {
+                font-size: 60px;
+                margin-bottom: 20px;
+            }
+            h1 {
+                margin: 0 0 20px 0;
+                font-size: 24px;
+            }
+            p {
+                margin: 0 0 30px 0;
+                line-height: 1.6;
+                opacity: 0.9;
+            }
+            .button {
+                background: #2563eb;
+                color: white;
+                padding: 15px 30px;
+                border: none;
+                border-radius: 10px;
+                font-size: 16px;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-block;
+                margin: 10px;
+                transition: background 0.3s;
+            }
+            .button:hover {
+                background: #1d4ed8;
+            }
+            .secondary {
+                background: transparent;
+                border: 2px solid white;
+            }
+            .secondary:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+            .success-message {
+                background: rgba(255, 255, 255, 0.2);
+                padding: 20px;
+                border-radius: 10px;
+                margin-bottom: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="icon">✅</div>
+            <h1>Email Confirmado!</h1>
+            
+            <div class="success-message">
+                <p>🎉 Seu email foi confirmado com sucesso!</p>
+                <p>Agora você pode fazer login no app.</p>
+            </div>
+            
+            <p>Clique no botão abaixo para abrir o app:</p>
+            
+            <a href="buscabusca://login?email_confirmed=true" 
+               class="button">
+                🚀 Abrir App
+            </a>
+            
+            <br>
+            <a href="https://play.google.com/store/apps/details?id=com.buscabusca.app" 
+               class="button secondary">
+                📱 Baixar App
+            </a>
+        </div>
+        
+        <script>
+            // Tentar abrir o app automaticamente após 2 segundos
+            setTimeout(() => {
+                window.location.href = 'buscabusca://login?email_confirmed=true';
+            }, 2000);
+            
+            // Se não conseguir abrir o app, mostrar mensagem
+            setTimeout(() => {
+                document.querySelector('.container').innerHTML += '<p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">Se o app não abriu automaticamente, clique no botão "Abrir App" acima.</p>';
+            }, 3000);
+        </script>
+    </body>
+    </html>
+    `;
+
+    res.send(html);
+});
+
 export default router; 
