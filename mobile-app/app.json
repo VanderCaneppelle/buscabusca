@@ -27,6 +27,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "supabaseRedirectUrl": "buscabusca://auth/callback"
     }
   }
 }

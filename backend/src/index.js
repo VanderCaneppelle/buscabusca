@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import anuncioRoutes from './routes/anuncioRoutes.js';
 import usuarioRoutes from './routes/usuarioRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import { logDeepLinkConfig } from './config/deepLinks.js';
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -69,10 +70,17 @@ app.listen(PORT, () => {
     console.log(`📍 URL: http://localhost:${PORT}`);
     console.log(`📅 Data: ${new Date().toLocaleString('pt-BR')}`);
     console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+
+    // Log das configurações de deep link
+    logDeepLinkConfig();
+
     console.log('📋 Endpoints disponíveis:');
     console.log(`   GET  / - Status da API`);
     console.log(`   GET  /anuncios/listar - Listar anúncios`);
     console.log(`   GET  /anuncios/:id - Buscar anúncio por ID`);
     console.log(`   POST /anuncios/criar - Criar anúncio (autenticado)`);
     console.log(`   POST /anuncios/aprovar/:id - Aprovar anúncio (autenticado)`);
+    console.log(`   POST /auth/recuperar-senha - Recuperar senha`);
+    console.log(`   POST /auth/reset-password - Resetar senha`);
+    console.log(`   GET  /auth/reset-password - Página de redirecionamento`);
 }); 

@@ -1,4 +1,5 @@
 import supabase from '../supabase/supabaseClient.js';
+import { getResetPasswordRedirectUrl, logDeepLinkConfig } from '../config/deepLinks.js';
 
 /**
  * Recuperar senha - Enviar email de reset
@@ -30,9 +31,15 @@ export async function recuperarSenha(req, res) {
             });
         }
 
+        // Obter URL de redirecionamento baseada no ambiente
+        const redirectTo = getResetPasswordRedirectUrl();
+
+        // Log da configuração para debug
+        logDeepLinkConfig();
+
         // Enviar email de recuperação via Supabase
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${process.env.BACKEND_URL || 'https://buscabusca-production.up.railway.app'}/auth/reset-password`
+            redirectTo: redirectTo
         });
 
         if (error) {
@@ -46,7 +53,8 @@ export async function recuperarSenha(req, res) {
 
         return res.json({
             success: true,
-            message: 'Email de recuperação enviado com sucesso!'
+            message: 'Email de recuperação enviado com sucesso!',
+            redirectTo: redirectTo // Para debug
         });
 
     } catch (error) {
