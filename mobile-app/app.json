@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "scheme": "buscabusca",
     "splash": {
       "image": "./assets/splash-icon.png",
@@ -22,14 +21,15 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
       "package": "com.buscabusca.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "supabaseRedirectUrl": "buscabusca://auth/callback"
+      "eas": {
+        "projectId": "ccf0bd50-cd66-4a2a-b3c5-871f71d04cec"
+      }
     }
   }
 }

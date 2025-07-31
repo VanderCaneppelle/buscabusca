@@ -392,4 +392,106 @@ router.get('/confirm-email', (req, res) => {
     res.send(html);
 });
 
+// Rota para lidar com callback do Supabase
+router.get('/callback', async (req, res) => {
+    try {
+        console.log('🔗 Callback do Supabase recebido');
+        console.log('📋 Query params:', req.query);
+        console.log('🔗 Hash:', req.url.split('#')[1]);
+
+        // Extrair tokens do hash da URL
+        const hash = req.url.split('#')[1];
+        if (hash) {
+            const params = new URLSearchParams(hash);
+            const accessToken = params.get('access_token');
+            const refreshToken = params.get('refresh_token');
+            const type = params.get('type');
+
+            console.log('🎫 Tokens extraídos:', { accessToken: !!accessToken, refreshToken: !!refreshToken, type });
+
+            if (accessToken && type === 'recovery') {
+                // Redirecionar para o app com o token
+                const deepLink = `buscabusca://reset-password?access_token=${accessToken}`;
+                console.log('📱 Redirecionando para:', deepLink);
+
+                return res.send(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Redirecionando...</title>
+                        <meta charset="utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1">
+                        <style>
+                            body { 
+                                font-family: Arial, sans-serif; 
+                                text-align: center; 
+                                padding: 50px; 
+                                background: #f5f5f5; 
+                            }
+                            .container { 
+                                background: white; 
+                                padding: 30px; 
+                                border-radius: 10px; 
+                                box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+                                max-width: 400px; 
+                                margin: 0 auto; 
+                            }
+                            .btn { 
+                                background: #007AFF; 
+                                color: white; 
+                                padding: 15px 30px; 
+                                border: none; 
+                                border-radius: 8px; 
+                                font-size: 16px; 
+                                cursor: pointer; 
+                                text-decoration: none; 
+                                display: inline-block; 
+                                margin: 10px; 
+                            }
+                            .btn:hover { background: #0056CC; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <h2>🔄 Redirecionando para o App</h2>
+                            <p>Aguarde enquanto abrimos o Busca Busca Imóveis...</p>
+                            <a href="${deepLink}" class="btn">Abrir App</a>
+                            <p style="font-size: 12px; color: #666; margin-top: 20px;">
+                                Se o app não abrir automaticamente, clique no botão acima
+                            </p>
+                        </div>
+                        <script>
+                            // Tentar abrir o app automaticamente
+                            setTimeout(() => {
+                                window.location.href = '${deepLink}';
+                            }, 1000);
+                        </script>
+                    </body>
+                    </html>
+                `);
+            }
+        }
+
+        // Fallback se não conseguir extrair tokens
+        res.send(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Erro no Redirecionamento</title>
+                <meta charset="utf-8">
+            </head>
+            <body>
+                <h2>❌ Erro no Redirecionamento</h2>
+                <p>Não foi possível processar o link de recuperação de senha.</p>
+                <p>Por favor, tente novamente ou entre em contato com o suporte.</p>
+            </body>
+            </html>
+        `);
+
+    } catch (error) {
+        console.error('❌ Erro no callback:', error);
+        res.status(500).send('Erro interno do servidor');
+    }
+});
+
 export default router; 

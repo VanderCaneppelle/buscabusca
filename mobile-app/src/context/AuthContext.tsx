@@ -123,7 +123,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Função para atualizar dados do usuário
     const refreshUser = async () => {
         if (session?.user?.id) {
-            await fetchUserData(session.user.id);
+            await fetchUserData(session.user.id, session.user.email || '');
         }
     };
 

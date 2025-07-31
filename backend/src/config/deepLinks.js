@@ -8,13 +8,8 @@
  * @returns {string} URL de redirecionamento
  */
 export function getResetPasswordRedirectUrl() {
-    if (process.env.NODE_ENV === 'development') {
-        // Em desenvolvimento, usar URL do backend para testes com Expo Go
-        return `${process.env.BACKEND_URL || 'http://localhost:3000'}/auth/reset-password`;
-    } else {
-        // Em produção, usar deep link nativo direto
-        return 'buscabusca://reset-password';
-    }
+    // Sempre usar o callback do backend para processar o redirecionamento
+    return `${process.env.BACKEND_URL || 'https://buscabusca-production.up.railway.app'}/auth/callback`;
 }
 
 /**
@@ -22,13 +17,8 @@ export function getResetPasswordRedirectUrl() {
  * @returns {string} URL de redirecionamento
  */
 export function getEmailConfirmationRedirectUrl() {
-    if (process.env.NODE_ENV === 'development') {
-        // Em desenvolvimento, usar URL do backend para testes com Expo Go
-        return `${process.env.BACKEND_URL || 'http://localhost:3000'}/auth/confirm-email`;
-    } else {
-        // Em produção, usar deep link nativo direto
-        return 'buscabusca://login?email_confirmed=true';
-    }
+    // Sempre usar o callback do backend para processar o redirecionamento
+    return `${process.env.BACKEND_URL || 'https://buscabusca-production.up.railway.app'}/auth/callback`;
 }
 
 /**
